@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="../resources/css/ext-all.css" />
+    <!-- LIBS -->
+    <script type="text/javascript" src="../adapter/ext/ext-base.js"></script>
+    <!-- ENDLIBS -->
+    <script type="text/javascript" src="../ext-all.js"></script>
+    <script>
+
+        Ext.onReady(function(){
+            var navHandler = function(direction){
+
+                var wizard = Ext.getCmp('wizard').layout;
+                var prev = Ext.getCmp('card-prev');
+                var next = Ext.getCmp('card-next');
+                var activeId = wizard.activeItem.id;
+                var trash=Ext.getCmp('card-0').items.items
+                var trash1=Ext.getCmp('card-1').items.items
+                var answer=""
+                var choosed=null
+                var choosed1=null
+                if (activeId == 'card-0') {
+                    if (direction == 1) {
+                        wizard.setActiveItem(1);
+                        prev.setDisabled(false);
+                    }
+                } else if (activeId == 'card-1') {
+                    if (direction == -1) {
+                        wizard.setActiveItem(0);
+                        prev.setDisabled(true);
+                    } else {
+                        choosed=trash.filter(item=>item.checked==true)[0].boxLabel
+                        choosed1=trash1.filter(item=>item.checked==true).map(item=>item.boxLabel)
+                        answer+=choosed+"\n";
+                        for(var i=0;i<choosed1.length;i++){
+                            answer+=choosed1[i]+"\n";
+                        }
+                    console.log(answer)
+                        Ext.getCmp('answer').setValue(answer)
+                        Ext.getCmp('card-2').show(choosed)
+                        wizard.setActiveItem(2);
+                        next.setDisabled(true);
+                    }
+                } else if (activeId == 'card-2') {
+                    if (direction == -1) {
+                        wizard.setActiveItem(1);
+                        next.setDisabled(false);
+                    }
+                }
+            };
+
+            var viewport = new Ext.Viewport({
+                layout:'border',
+                items:[{
+                    region: 'north',
+                    id: 'wizard',
+                    height: 400,
+                    title: 'card',
+                    layout:'card',
+                    activeItem: 0,
+                    bodyStyle: 'padding:15px',
+                    defaults: {
+                        border: false
+                    },
+                    bbar: ['->', {
+                        id: 'card-prev',
+                        text: '&laquo; Previous',
+                        height:20,
+                        handler: navHandler.createDelegate(this, [-1]),
+                    },{
+                        id: 'card-next',
+                        text: 'Next &raquo;',
+                        height:20,
+                        handler: navHandler.createDelegate(this, [1]),
+                    }],
+                    items: [{
+                        id: 'card-0',
+                        labelAlign:'top',
+                        xtype:"fieldset",
+                        defaultType: 'radio',
+                        items:[
+                            {
+                                html:'番茄醬算什麽垃圾 ',
+                                xtype:'label'
+                            },
+                        {
+                            checked: true,
+                            boxLabel: '濕垃圾',
+                            name: 'trash',
+                            inputValue: 'wet'
+                        }, {
+                            fieldLabel: '',
+                            labelSeparator: '',
+                            boxLabel: '乾垃圾',
+                            name: 'trash',
+                            inputValue: 'drag'
+                        }, {
+                            fieldLabel: '',
+                            labelSeparator: '',
+                            boxLabel: '有害垃圾',
+                            name: 'trash',
+                            inputValue: 'danger'
+                        },{
+                                fieldLabel: '',
+                                labelSeparator: '',
+                                boxLabel: '可回收物',
+                                name: 'trash',
+                                inputValue: 'danger'
+                            }
+                        ],
+                    },{
+                        id: 'card-1',
+                        defaultType:'checkbox',
+                        items: [
+                            {
+                                html: '以下哪種方式是正確的處理方式',
+                                xtype:'label'
+                            },{
+                            fieldLabel: '',
+                            labelSeparator: '',
+                            boxLabel: '把粑粑用廢報紙包好回家衝掉',
+                            name: 'fav-animal-cat'
+                        }, {
+                            checked: true,
+                            fieldLabel: '',
+                            labelSeparator: '',
+                            boxLabel: '受污染的報紙按有害垃圾處理',
+                            name: 'fav-animal-monkey'
+                        },{
+                            fieldLabel: '',
+                            boxLabel: '沒受污染的報紙按可回收垃圾處理',
+                            name: 'rightWay'
+                        },{
+                            checked: true,
+                            fieldLabel: '',
+                            labelSeparator: '',
+                            boxLabel: '受污染的報紙浸水后儅濕垃圾處理',
+                            name: 'fav-animal-monkey'
+                        },]
+                    },{
+                        id: 'card-2',
+                        xtype:'fieldset',
+                        layout:'border',
+                       items:[{
+                            region:'center',
+                            id:'answer',
+                           xtype:'textarea',
+                           width:400,
+                           height:200,
+
+                       },{
+                           region:'south',
+                           xtype: 'button',
+                           text: 'submit',
+                           listeners:{
+                               'click': function(btn, form){
+                                   Ext.MessageBox.alert('Greeting','您已完成作答!')
+                               }}
+                       }],
+                    }]},{
+                    region: 'center',
+                }
+                ]
+
+            })
+
+
+        });
+
+    </script>
+</head>
+<body>
+
+</body>
+</html>
