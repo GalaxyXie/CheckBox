@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../resources/css/ext-all.css" />
+    <!-- LIBS -->
+    <script type="text/javascript" src="../adapter/ext/ext-base.js"></script>
+    <!-- ENDLIBS -->
+    <script type="text/javascript" src="../ext-all.js"></script>
+</head>
+<body>
+<script>
+    Ext.onReady(function () {
+        var navHandler = function(direction){
+            Ext.getCmp('move-prev').setDisabled(false)
+            Ext.getCmp('move-next').setDisabled(false)
+            var activeItem = card.layout.activeItem;
+            var active = card.items.indexOf(activeItem);
+            if(direction === 1){
+                active += 1
+            }else{
+                active -= 1
+            }
+            if(active === 0){
+                Ext.getCmp('move-prev').setDisabled(true)
+            }
+            if(active === 2){
+                Ext.getCmp('move-next').setDisabled(true)
+            }
+            card.layout.setActiveItem(active);
+        };
+
+
+        var checkboxGroup = new Ext.form.CheckboxGroup({
+            id: 'checkboxGroup',
+            xtype: 'checkboxgroup',
+            name: 'checkboxGroup',
+            width: 350,
+            columns: 1,
+            items: [{
+                boxLabel: '把粑粑用廢報紙包好回家衝掉',
+                id: 'c1',
+                name: 'c1',
+                inputValue: '1'
+            }, {
+                id: 'c2',
+                boxLabel: '受污染的報紙按有害垃圾處理',
+                name: 'c2',
+                inputValue: "2"
+            }, {
+                id: 'c3',
+                boxLabel: '沒受污染的報紙按可回收垃圾處理',
+                name: 'c3',
+                inputValue: "3"
+            },
+                {
+                    id: 'c4',
+                    boxLabel: '受污染的報紙浸水后儅濕垃圾處理',
+                    name: 'c4',
+                    inputValue: "4"
+                }],
+            listeners: {
+                'change':function() {
+                    var list=Ext.getCmp('checkboxGroup').items.items
+                    for(item of list){
+                        result.getForm().items.items[1].setValue(item.name, item.checked)
+                    }
+                }
+            }
+        });
+        var checkboxPanel = new Ext.FormPanel({
+            border: false,
+            items: [{
+                border: false,
+                html: '<p>以下哪種方式是正確的處理方式</p>'
+            }, checkboxGroup]
+        })
+        var radioGroup = new Ext.form.RadioGroup({
+            id: 'radioGroup',
+            xtype: 'radiogroup',
+            name: 'radioGroup',
+            width: 350,
+            columns: 1,
+            items: [
+                { boxLabel: '湿垃圾', name: 'radio', inputValue: '1'},
+                { boxLabel: '干垃圾', name: 'radio', inputValue: '2' },
+                { boxLabel: '有害垃圾', name: 'radio', inputValue: '3' },
+                { boxLabel: '可回收物', name: 'radio', inputValue: '4' }
+            ],
+            listeners: {
+                'change': (o, checked) => {
+                    result.getForm().items.items[0].setValue(checked.inputValue)
+                }
+            }
+        });
+        var radioPanel = new Ext.FormPanel({
+            border: false,
+            items: [{
+                border: false,
+                html: '<p>番茄醬算什麽垃圾</p>'
+            }, radioGroup]
+        })
+        var result = new Ext.FormPanel({
+            items: [
+                new Ext.form.RadioGroup({
+                    id: 'q1final',
+                    fieldLabel: '番茄醬算什麽垃圾',
+                    disabled: true,
+                    columns: 1,
+                    items: [
+                        { boxLabel: '濕垃圾', name: 'radio', inputValue: '1'},
+                        { boxLabel: '乾垃圾', name: 'radio', inputValue: '2' },
+                        { boxLabel: '有害垃圾', name: 'radio', inputValue: '3' },
+                        { boxLabel: '可回收物', name: 'radio', inputValue: '4' }
+                    ]
+                }),
+                new Ext.form.CheckboxGroup({
+                    fieldLabel: '以下哪種方式是正確的處理方式',
+                    disabled: true,
+                    columns: 1,
+                    items: [{
+                        boxLabel: '把粑粑用廢報紙包好回家衝掉',
+                        name: 'c1',
+                        inputValue: '1'
+                    }, {
+                        boxLabel: '受污染的報紙按有害垃圾處理',
+                        name: 'c2',
+                        inputValue: "2"
+                    }, {
+                        boxLabel: '沒受污染的報紙按可回收垃圾處理',
+                        name: 'c3',
+                        inputValue: "3"
+                    },
+                        {
+                            boxLabel: '受污染的報紙浸水后儅濕垃圾處理',
+                            name: 'c4',
+                            inputValue: "4"
+                        }]
+                })
+            ],
+            buttons: [
+                {
+                    text: "提交",
+                    handler: () => {
+                        Ext.MessageBox.alert('Greeting','您已完成作答!')
+                    }
+                }
+            ]
+        })
+        var card = new Ext.Panel({
+            title: 'Example Wizard',
+            renderTo:'test',
+            layout:'card',
+            activeItem: 0,
+            bodyStyle: 'padding:15px',
+            defaults: {
+                border:false
+            },
+            bbar: [
+                {
+                    id: 'move-prev',
+                    text: 'Back',
+                    handler: navHandler.createDelegate(this, [-1]),
+                    disabled: true
+                },
+                '->',
+                {
+                    id: 'move-next',
+                    text: 'Next',
+                    handler: navHandler.createDelegate(this, [1])
+                }
+            ],
+            items: [
+                radioPanel,checkboxPanel,result
+            ]
+        });
+    })
+</script>
+<div id="test"></div>
+</body>
+</html>
